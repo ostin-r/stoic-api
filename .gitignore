@@ -1,2 +1,4 @@
 apienv/
+api/migrations
+*.sqlite3
 
