@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import JsonResponse
-from api.models import Quotes
+from api.models import Quote
 
 # todo: add ability to get quote from author
 # todo: get list of all authors
@@ -12,7 +12,7 @@ def quotes(request):
     response = {'success': True}
     if request.method == 'GET':
         # if the list gets big, update with more efficient method
-        random_quote = Quotes.objects.order_by('?').first()
+        random_quote = Quote.objects.order_by('?').first()
         response.update({'quote': random_quote.quote, 'author': random_quote.author})
     return JsonResponse(response)
 
