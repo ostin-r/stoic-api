@@ -1,6 +1,6 @@
 import logging
-from django.shortcuts import render
 from django.http import JsonResponse
+from django.db import models 
 from api.models import Quote
 
 # todo: add ability to get quote from author
@@ -23,11 +23,23 @@ def quotes(request):
             random_quote = Quote.objects.order_by('?').first()
             response.update({'quote': random_quote.quote, 'author': random_quote.author, 'source': random_quote.source})
         else:
-            pass # todo: get all quote
-        # if the list gets big, update with more efficient method
-        pass
+            all_quotes = Quote.objects.all()
+            response['quotes'] = []
+            for quote in all_quotes:
+                formatted_quote = {
+                        'quote': quote.quote, 
+                        'author': quote.author, 
+                        'source': {
+                            'title': quote.source.title, 
+                            'isbn': quote.source.isbn, 
+                            'authors': []
+                        }
+                    }
+                for author in quote.source.authors.all():
+                    formatted_quote['source']['authors'].append(author.name)
+                response['quotes'].append(formatted_quote)
+    else:
+        response.update({'success': False, 'message': 'Request type not supported for quotes'})
     return JsonResponse(response)
 
-
-# todo: add a function to update daily quote
 
